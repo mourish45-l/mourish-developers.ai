@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPI Payment Verification</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 h-screen flex flex-col justify-center items-center space-y-6">
+
+<!-- PAY BUTTON -->
+<a onclick="showVerify()"
+   href="https://www.upi.me/pay?pa=lifegas1987-1@okhdfcbank&am=1072.86&tn=You"
+   class="px-12 py-4 text-xl font-semibold rounded-xl shadow-lg
+          bg-gray-700 hover:bg-gray-600 text-teal-300 transition duration-300
+          transform hover:scale-105 active:scale-95 flex items-center justify-center">
+    Pay
+</a>
+
+<!-- VERIFY BOX (hidden initially) -->
+<div id="verifyBox" class="bg-white shadow-xl p-6 rounded-xl w-full max-w-md hidden">
+    <h2 class="text-2xl font-bold text-center mb-4">Verify Payment</h2>
+
+    <label class="font-semibold">Enter Your UPI ID</label>
+    <input id="upiid" type="text"
+        class="w-full p-3 border rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="example@okaxis">
+
+    <button onclick="sendWA()"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 font-semibold rounded-lg">
+        Verify
+    </button>
+</div>
+
+<script>
+// SHOW VERIFY BOX AFTER CLICKING PAY
+function showVerify() {
+    document.getElementById("verifyBox").classList.remove("hidden");
+}
+
+function sendWA() {
+    let upi = document.getElementById("upiid").value.trim();
+
+    if (upi === "") {
+        alert("Please enter your UPI ID");
+        return;
+    }
+
+    // Your WhatsApp Number
+    let admin = "919487410078";
+
+    let message = `UPI Payment Verification%0A------------------%0AUPI ID: ${upi}%0A------------------%0APlease verify the payment.`;
+
+    window.open(`https://wa.me/${admin}?text=${message}`, "_blank");
+}
+</script>
+
+</body>
+</html>
