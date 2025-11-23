@@ -3,229 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mourish Developers AI - The Future of Web & App Building</title>
-    <!-- Load Tailwind CSS -->
+    <title>Mourish AI - Next-Gen App & Website Builder</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Inter Font -->
+    <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        /* Custom Variables */
+        /* Custom Styles for 3D, Overlay, and Professional Polish */
         :root {
-            --color-primary: #00BCD4; /* Cyan */
-            --color-secondary: #0F172A; /* Deep Blue */
-            --color-accent: #1D4ED8; /* Darker Blue for depth */
-        }
-        body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--color-secondary);
-            color: white;
-            scroll-behavior: smooth;
-            overflow-x: hidden;
         }
-        /* Custom gradient for hero background */
-        .hero-bg {
-            background: radial-gradient(circle at 50% 10%, #173b7580 0%, transparent 45%), linear-gradient(180deg, var(--color-secondary) 0%, #080c14 100%);
+
+        /* Body Background - Deep space gradient */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #030712 100%);
         }
-        /* Gradient text effect */
-        .text-gradient {
-            background-image: linear-gradient(90deg, #1d4ed8, #00BCD4, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        /* The canvas covers the entire fixed viewport */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            transition: opacity 1s ease;
         }
-        /* CTA button styling and hover effect */
-        .cta-button {
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+
+        /* The overlay contains all scrollable content */
+        #content-overlay {
+            position: relative;
+            z-index: 20;
+            min-height: 100vh;
+            /* Subtler background for text legibility */
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
         }
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 188, 212, 0.6);
+
+        /* Custom class for the deep, pulsating glow on headlines */
+        .glow-headline {
+            animation: pulse-glow 3s infinite alternate;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.4);
         }
-        /* Card background with transparency and blur */
-        .card-bg {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        @keyframes pulse-glow {
+            from { opacity: 0.9; }
+            to { opacity: 1; }
         }
-        /* Pricing card hover effect */
-        .pricing-card {
-            transition: all 0.3s ease-in-out;
+
+        /* Loading Spinner Animation */
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #00FFFF;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
         }
-        .pricing-card:hover {
-            transform: scale(1.03);
-            border-color: var(--color-primary);
-            box-shadow: 0 10px 40px rgba(0, 188, 212, 0.2);
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="selection:bg-cyan-500 selection:text-white">
+<body class="text-white overflow-x-hidden">
 
-    <!-- Header / Navigation -->
-    <header class="sticky top-0 z-50 card-bg py-4 px-6 md:px-12">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="#" class="text-2xl font-extrabold text-gradient tracking-tight">
-                Mourish AI
-            </a>
-            <div class="flex items-center space-x-4">
-                <!-- Currency Selector - UPDATED OPTIONS -->
-                <select id="currency-selector" class="bg-gray-700 text-white p-2 rounded-lg cursor-pointer transition duration-200 hover:bg-gray-600 focus:ring-2 focus:ring-cyan-500">
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="INR">INR (₹)</option>
-                    <option value="JPY">JPY (¥)</option>
-                    <option value="GBP">GBP (£)</option>
-                    <option value="CAD">CAD (C$)</option>
-                    <option value="AUD">AUD (A$)</option>
-                    <option value="CHF">CHF (Fr)</option>
-                </select>
-                <button class="px-4 py-2 bg-cyan-600 text-white font-medium rounded-xl hover:bg-cyan-500 transition duration-300">
-                    Sign In
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Announcement Banner: Early 2026 Features -->
-    <div class="w-full bg-blue-700/80 text-center py-2 text-sm font-medium">
-        ✨ Mourish AI is launching its next-gen features in **Early 2026**! Stay tuned! ✨
+    <!-- 1. LOADING INDICATOR -->
+    <div id="loader-container" class="fixed inset-0 bg-gray-900 z-50 flex items-center justify-center transition-opacity duration-500">
+        <div class="loader"></div>
     </div>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero-bg pt-20 pb-40 text-center">
-            <div class="max-w-5xl mx-auto px-6">
-                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-                    Build Production <span class="text-gradient">Web & App</span> Code, Instantly.
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
-                    Mourish AI turns your simple idea into fully functional, production-ready applications across web, mobile, and desktop using state-of-the-art LLMs.
-                </p>
-                <div class="flex justify-center space-x-4">
-                    <button class="cta-button px-8 py-4 bg-cyan-600 text-white text-lg font-semibold rounded-2xl">
-                        Start Building for Free
-                    </button>
-                    <button class="px-8 py-4 bg-gray-700 text-white text-lg font-medium rounded-2xl transition duration-300 hover:bg-gray-600 border border-gray-600">
-                        View Demo
-                    </button>
+    <!-- 2. THREE.JS CANVAS CONTAINER (Fixed Background) -->
+    <canvas id="webgl-canvas" style="opacity: 0;"></canvas>
+
+    <!-- 3. CONTENT OVERLAY (Scrollable Foreground) -->
+    <main id="content-overlay">
+        <!-- Header -->
+        <header class="sticky top-0 left-0 right-0 p-6 flex justify-between items-center bg-gray-900/80 backdrop-blur-sm z-30 border-b border-gray-700/50">
+            <h1 class="text-2xl font-bold text-teal-400 glow-headline">MOURISH AI</h1>
+            <nav class="space-x-4">
+                <a href="#features" class="text-sm text-gray-300 hover:text-teal-400 transition duration-300 font-medium">Features</a>
+                <a href="#pricing" class="text-sm text-gray-300 hover:text-teal-400 transition duration-300 font-medium">Pricing</a>
+            </nav>
+        </header>
+
+        <!-- Hero Section (Full Viewport) -->
+        <section class="min-h-[90vh] flex items-center justify-center p-4 sm:p-8">
+            <div class="text-center max-w-5xl mx-auto py-20">
+                <div class="space-y-8">
+                    <!-- Launch Banner -->
+                    <p class="text-sm sm:text-base text-teal-300 font-medium tracking-widest uppercase bg-gray-800/50 inline-block px-4 py-1.5 rounded-full border border-teal-500/30">
+                        ✨ Next-Gen Launch: Early 2026. Get Ahead of the Curve. ✨
+                    </p>
+
+                    <!-- Main Headline -->
+                    <h2 class="text-6xl sm:text-8xl font-extrabold tracking-tighter leading-none glow-headline">
+                        Build Production Code, <span class="text-[#00FFFF]">Infinitely Scalable.</span>
+                    </h2>
+
+                    <!-- Subtitle -->
+                    <p class="text-xl sm:text-2xl text-gray-300 max-w-3xl mx-auto pt-4">
+                        Turn simple intent into functional, deployable applications across all platforms—web, mobile, and desktop—powered by multimodal LLMs.
+                    </p>
+
+                    <!-- Call to Action (CTA) -->
+                    <div class="pt-10 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                        <button class="
+                            px-12 py-4 text-xl font-bold rounded-xl shadow-2xl
+                            bg-gradient-to-r from-[#00FFFF] to-teal-500 text-gray-900
+                            transition duration-500 transform hover:scale-[1.03] active:scale-[0.98]
+                            focus:outline-none ring-4 ring-[#00FFFF] ring-opacity-50
+                        ">
+                            Secure Your Early Access Now
+                        </button>
+                        <a href="https://mourishdevelopersstudio.my.canva.site/mourish-ai" class="
+                            px-12 py-4 text-xl font-semibold rounded-xl shadow-lg
+                            bg-gray-700 hover:bg-gray-600 text-teal-300 transition duration-300
+                            transform hover:scale-105 active:scale-95 flex items-center justify-center
+                        ">
+                            Watch the Live Demo
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Features Section -->
-        <section id="features" class="-mt-20 py-20 px-6 md:px-12">
-            <div class="max-w-7xl mx-auto">
-                <h2 class="text-4xl font-bold text-center mb-16 text-cyan-400">Core Capabilities</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    <!-- Feature Card 1: Full-Stack Generation -->
-                    <div class="card-bg p-8 rounded-2xl shadow-xl transition transform hover:shadow-cyan-500/30">
-                        <svg class="w-10 h-10 text-cyan-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9.75 7L21.75 7L21.75 17L9.75 17Z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.75 22L12.75 2L4.75 2L4.75 22L12.75 22Z"></path></svg>
-                        <h3 class="text-2xl font-semibold mb-3">Full-Stack Generation</h3>
-                        <p class="text-gray-400">Generate complete web and mobile apps, including front-end UI, back-end logic, and database schemas from natural language prompts.</p>
+        <!-- Core Capabilities (Features Section) -->
+        <section id="features" class="py-24 bg-gray-900/80 backdrop-blur-md border-t border-b border-gray-700/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h3 class="text-4xl font-bold mb-16 text-teal-400">Core Engineering Capabilities</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <!-- Feature 1: Full-Stack Generation -->
+                    <div class="bg-gray-800/60 p-8 rounded-2xl border border-gray-700/50 hover:border-[#00FFFF] transition duration-500 transform hover:shadow-2xl hover:shadow-teal-900/70">
+                        <div class="text-5xl text-[#00FFFF] mb-4">
+                            <svg class="mx-auto" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-white">Full-Stack Generation</h4>
+                        <p class="text-gray-400 text-lg">Generate entire web and mobile ecosystems, delivering production-grade front-end, secured back-end logic, and complex database schemas from a single text prompt.</p>
                     </div>
 
-                    <!-- Feature Card 2: Multi-Model Power -->
-                    <div class="card-bg p-8 rounded-2xl shadow-xl transition transform hover:shadow-cyan-500/30">
-                        <svg class="w-10 h-10 text-cyan-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14H11V21L20 10H13Z"></path></svg>
-                        <h3 class="text-2xl font-semibold mb-3">Multi-Model Power</h3>
-                        <p class="text-gray-400">Leverage the combined intelligence of top LLMs, including specialized models for coding, reasoning, and aesthetic design.</p>
+                    <!-- Feature 2: Multi-Model Power -->
+                    <div class="bg-gray-800/60 p-8 rounded-2xl border border-gray-700/50 hover:border-[#00FFFF] transition duration-500 transform hover:shadow-2xl hover:shadow-teal-900/70">
+                         <div class="text-5xl text-[#00FFFF] mb-4">
+                            <svg class="mx-auto" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17s.7 3 4 3 4-3 4-3V5s-.7-3-4-3-4 3-4 3v12zm8-12s.7-3 4-3 4 3 4 3v12s-.7 3-4 3-4-3-4-3V5z"/></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-white">Multi-Model Orchestration</h4>
+                        <p class="text-gray-400 text-lg">Harness the combined power of multiple elite LLMs (Gemini, GPT, Claude) specialized for code, reasoning, and design fidelity in a unified workflow.</p>
                     </div>
 
-                    <!-- Feature Card 3: Live Iteration -->
-                    <div class="card-bg p-8 rounded-2xl shadow-xl transition transform hover:shadow-cyan-500/30">
-                        <svg class="w-10 h-10 text-cyan-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.75 7.75L17 10M17 10L14.75 12.25M17 10H5M20 18H4C3.44772 18 3 17.5523 3 17V7C3 6.44772 3.44772 6 4 6H20C20.5523 6 21 6.44772 21 7V17C21 17.5523 20.5523 18 20 18Z"></path></svg>
-                        <h3 class="text-2xl font-semibold mb-3">Live Iteration & Edit</h3>
-                        <p class="text-gray-400">Refine your generated code in real-time. Simply tell the AI what to change, and watch the updates instantly.</p>
+                    <!-- Feature 3: Live Iteration & Edit -->
+                    <div class="bg-gray-800/60 p-8 rounded-2xl border border-gray-700/50 hover:border-[#00FFFF] transition duration-500 transform hover:shadow-2xl hover:shadow-teal-900/70">
+                        <div class="text-5xl text-[#00FFFF] mb-4">
+                            <svg class="mx-auto" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-white">Zero-Latency Iteration</h4>
+                        <p class="text-gray-400 text-lg">Modify and refine generated code instantly through natural conversation. The AI understands context and deploys fixes with near-zero latency.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Pricing Section -->
-        <section id="pricing" class="py-20 px-6 md:px-12 bg-gray-900/50">
-            <div class="max-w-7xl mx-auto text-center">
-                <h2 class="text-4xl font-bold mb-4 text-white">Unleash Full AI Potential</h2>
-                <p class="text-xl text-gray-400 mb-16">Choose the plan that powers your development workflow.</p>
+        <section id="pricing" class="py-24 bg-gray-900/90 backdrop-blur-sm">
+             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h3 class="text-4xl font-bold mb-8 text-white">Unlock Professional Workflow Tiers</h3>
+                <p class="text-xl text-gray-400 mb-16">Choose the solution that aligns with your development velocity and scale.</p>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    
-                    <!-- Free Plan -->
-                    <div class="pricing-card card-bg p-8 rounded-3xl border-2 border-cyan-700/50 flex flex-col items-center">
-                        <p class="text-lg font-medium text-cyan-400">Free Tier</p>
-                        <h3 class="text-4xl font-bold my-4">
-                            <span id="price-free">Free</span>
-                            <span class="text-lg text-gray-400"> / Forever</span>
-                        </h3>
-                        <p class="text-gray-400 mb-8">Perfect for hobbyists and first projects.</p>
-                        
-                        <div class="text-left w-full space-y-3 mb-8">
-                            <h4 class="font-semibold text-gray-300">Core AI Engine:</h4>
-                            <p class="flex items-center text-cyan-400"><span class="mr-2 text-xl">🚀</span> **Gemini 2.5** (Coming Soon)</p>
-                            
-                            <h4 class="font-semibold text-gray-300 pt-4">Includes:</h4>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> Basic Web Generator</p>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> 5 Deployments/Month</p>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> Community Support</p>
-                        </div>
-                        
-                        <button class="w-full py-3 bg-gray-700 text-white font-semibold rounded-xl hover:bg-gray-600 transition duration-300">
+                    <!-- Pricing Card 1: Free Tier -->
+                    <div class="bg-gray-800/70 p-8 rounded-2xl text-left flex flex-col border border-gray-700/50">
+                        <span class="text-sm font-semibold text-teal-400 uppercase tracking-wider mb-2">Hobbyist / Free Tier</span>
+                        <h4 class="text-3xl font-bold mb-4">
+                            <span class="text-white">Free</span> <span class="text-gray-400">/1 month</span>
+                        </h4>
+                        <p class="text-gray-400 mb-6 flex-grow">Perfect for initial experiments and personal learning projects.</p>
+
+                        <ul class="space-y-3 mb-8 text-gray-300">
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>Basic Web Generator Access</span></li>
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>5 Deployments/Month Limit</span></li>
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>Community Knowledge Base</span></li>
+                            <li class="flex items-center space-x-2 text-teal-300"><span class="text-teal-400">🚀</span><span>**Gemini 3.1** (Soon)</span></li>
+                        </ul>
+
+                        <button class="w-full py-3 font-semibold rounded-lg bg-gray-600 text-white hover:bg-gray-500 transition duration-300">
                             Get Started
                         </button>
                     </div>
 
-                    <!-- Advanced Plan -->
-                    <div class="pricing-card card-bg p-8 rounded-3xl border-2 border-cyan-500/50 flex flex-col items-center relative">
-                        <div class="absolute -top-3 px-4 py-1 bg-cyan-600 text-white text-xs font-bold uppercase rounded-full tracking-wider">
-                            Advanced
-                        </div>
-                        <p class="text-lg font-medium text-cyan-400">Advanced Workflow</p>
-                        <h3 class="text-4xl font-bold my-4">
-                            <span id="price-advanced"></span>
-                            <span class="text-lg text-gray-400"> / month</span>
-                        </h3>
-                        <p class="text-gray-400 mb-8">Unlocks superior coding and reasoning models.</p>
-                        
-                        <div class="text-left w-full space-y-3 mb-8">
-                            <h4 class="font-semibold text-gray-300">Elite AI Engines:</h4>
-                            <p class="flex items-center text-cyan-400"><span class="mr-2 text-xl">⚡</span> **GPT 4.1** (Coming Soon)</p>
-                            <p class="flex items-center text-cyan-400"><span class="mr-2 text-xl">⚡</span> **Claude Sonnet 4.5** (Coming Soon)</p>
+                    <!-- Pricing Card 2: Advanced (Highlighted) -->
+                    <div class="bg-gray-800/70 p-8 rounded-2xl text-left flex flex-col border border-gray-700/50 ring-2 ring-[#00FFFF] shadow-2xl shadow-teal-900/50 transform scale-[1.05]">
+                        <span class="text-sm font-semibold text-[#00FFFF] uppercase tracking-wider mb-2">Professional Advanced</span>
+                        <h4 class="text-3xl font-bold mb-4">
+                            <span class="text-white">$19</span> <span class="text-gray-400">/ month</span>
+                        </h4>
+                        <p class="text-gray-400 mb-6 flex-grow">Designed for professional developers and small agencies requiring high performance.</p>
 
-                            <h4 class="font-semibold text-gray-300 pt-4">Includes:</h4>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> Multi-File Project Generation</p>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> Unlimited Deployments</p>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> Priority Support</p>
-                        </div>
+                        <ul class="space-y-3 mb-8 text-gray-300">
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>Multi-File Project Architecture</span></li>
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>Unlimited Deployments & Builds</span></li>
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>Priority Email Support (24hr SLA)</span></li>
+                            <li class="flex items-center space-x-2 text-teal-300"><span class="text-teal-400">⚡</span><span>**GPT 5.1 + Claude Sonnet** (Soon)</span></li>
+                            <li class="flex items-center space-x-2 text-teal-300"><span class="text-teal-400">⚡</span><span>**Dedicated High-Speed Tokens**</span></li>
+                        </ul>
 
-                        <!-- UPDATED BUTTON -->
-                        <button class="w-full py-3 cta-button bg-cyan-600 text-white font-semibold rounded-xl" onclick="goToSubscriptionPage('Advanced')">
+                        <button class="w-full py-3 font-bold rounded-lg bg-teal-500 text-gray-900 hover:bg-teal-400 transition duration-300">
                             Subscribe Now
                         </button>
                     </div>
 
-                    <!-- Pro Plan - Button Changed to "Subscribe Now" -->
-                    <div class="pricing-card card-bg p-8 rounded-3xl border-2 border-cyan-500 flex flex-col items-center">
-                        <p class="text-lg font-medium text-cyan-400">Pro Enterprise</p>
-                        <h3 class="text-4xl font-bold my-4">
-                            <span id="price-pro"></span>
-                            <span class="text-lg text-gray-400"> / month</span>
-                        </h3>
-                        <p class="text-gray-400 mb-8">The ultimate performance tier for professional teams.</p>
-                        
-                        <div class="text-left w-full space-y-3 mb-8">
-                            <h4 class="font-semibold text-gray-300">Frontier AI Engines:</h4>
-                            <p class="flex items-center text-cyan-400"><span class="mr-2 text-xl">✨</span> **Gemini 2.5 Flash** (Coming Soon)</p>
-                            <p class="flex items-center text-cyan-400"><span class="mr-2 text-xl">✨</span> **Claude Sonnet 4.5** (Coming Soon)</p>
-                            <p class="flex items-center text-cyan-400"><span class="mr-2 text-xl">✨</span> **GPT 5.1** (Coming Soon)</p>
-                            <p class="flex items-center text-cyan-400"><span class="mr-2 text-xl">✨</span> **Deepseek V3 0324** (Coming Soon)</p>
+                    <!-- Pricing Card 3: Pro Enterprise -->
+                    <div class="bg-gray-800/70 p-8 rounded-2xl text-left flex flex-col border border-gray-700/50 ring-2 ring-[#00FFFF] shadow-2xl shadow-teal-900/50 transform scale-[1.05]">
+                        <span class="text-sm font-semibold text-teal-400 uppercase tracking-wider mb-2">Enterprise Custom</span>
+                        <h4 class="text-3xl font-bold mb-4">
+                            <span class="text-white">$190</span> <span class="text-gray-400">/ Month</span>
+                        </h4>
+                        <p class="text-gray-400 mb-6 flex-grow">The ultimate performance tier for large-scale operations and unique integration needs.</p>
 
-                            <h4 class="font-semibold text-gray-300 pt-4">Includes:</h4>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> Team Collaboration Features</p>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> Dedicated Account Manager</p>
-                            <p class="flex items-center text-gray-200"><span class="text-green-400 mr-2">✓</span> Custom Model Fine-Tuning</p>
-                        </div>
-                        
-                        <!-- UPDATED BUTTON -->
-                        <button class="w-full py-3 cta-button bg-cyan-600 text-white font-semibold rounded-xl" onclick="goToSubscriptionPage('Pro')">
+                        <ul class="space-y-3 mb-8 text-gray-300">
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>Team Collaboration & SSO</span></li>
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>Dedicated Account Management</span></li>
+                            <li class="flex items-center space-x-2"><span class="text-teal-400">✓</span><span>Custom Model Fine-Tuning Service</span></li>
+                            <li class="flex items-center space-x-2 text-teal-300"><span class="text-teal-400">✨</span><span>**Frontier LLM Access** (All Models)</span></li>
+                            <li class="flex items-center space-x-2 text-teal-300"><span class="text-teal-400">✨</span><span>**On-Premise Deployment Option**</span></li>
+                        </ul>
+
+                        <button class="w-full py-3 font-bold rounded-lg bg-teal-500 text-gray-900 hover:bg-teal-400 transition duration-300">
                             Subscribe Now
                         </button>
                     </div>
@@ -233,112 +239,207 @@
             </div>
         </section>
 
-        <!-- Footer - Expanded -->
-        <footer class="py-10 px-6 md:px-12 bg-gray-900/50 border-t border-gray-800">
-            <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-                <!-- Column 1: Logo & Branding -->
+
+        <!-- Footer -->
+        <footer class="bg-gray-900/90 border-t border-gray-800 py-12">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left">
+                <!-- Col 1: Logo/Title -->
                 <div class="col-span-2 md:col-span-1">
-                    <p class="text-xl font-extrabold text-gradient mb-4">Mourish AI</p>
-                    <p class="text-gray-500 text-sm">Build the future, instantly.</p>
-                    <p class="text-gray-500 text-sm mt-4">Mourish Developers. All rights reserved.</p>
+                    <h5 class="text-xl font-bold text-teal-400 glow-headline mb-2">MOURISH AI</h5>
+                    <p class="text-sm text-gray-500">Build the future, instantly.</p>
                 </div>
 
-                <!-- Column 2: Product -->
+                <!-- Col 2: Product -->
                 <div>
-                    <h4 class="text-white font-semibold mb-4">Product</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Features</a></li>
-                        <li><a href="#pricing" class="text-gray-400 hover:text-cyan-400 transition duration-200">Pricing</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Roadmap</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Integrations</a></li>
+                    <h6 class="font-semibold text-white mb-3">Product</h6>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#features" class="hover:text-teal-400 transition">Features</a></li>
+                        <li><a href="#pricing" class="hover:text-teal-400 transition">Pricing</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Roadmap</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Integrations</a></li>
                     </ul>
                 </div>
 
-                <!-- Column 3: Resources -->
+                <!-- Col 3: Resources -->
                 <div>
-                    <h4 class="text-white font-semibold mb-4">Resources</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Documentation</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Tutorials</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">API Status</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Support</a></li>
+                    <h6 class="font-semibold text-white mb-3">Resources</h6>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-teal-400 transition">Documentation</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Tutorials</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">API Status</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Support</a></li>
                     </ul>
                 </div>
 
-                <!-- Column 4: Company & Legal -->
+                <!-- Col 4: Company -->
                 <div>
-                    <h4 class="text-white font-semibold mb-4">Company</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">About Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Careers</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-200">Terms of Service</a></li>
+                    <h6 class="font-semibold text-white mb-3">Company</h6>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-teal-400 transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Terms of Service</a></li>
                     </ul>
                 </div>
+            </div>
+            <div class="text-center mt-12 text-sm text-gray-500 border-t border-gray-800 pt-8">
+                &copy; 2025 Mourish Developers. All rights reserved.
             </div>
         </footer>
     </main>
 
-    <!-- JavaScript for Currency Conversion and Navigation -->
-    <script>
-        /**
-         * Function to navigate to the subscription/checkout page.
-         * Redirects to subscription.html and passes the selected plan as a query parameter.
-         * @param {string} plan - The plan selected ('Advanced' or 'Pro').
-         */
-        function goToSubscriptionPage(plan) {
-            const newFilePath = 'subscription.html'; 
-            const checkoutUrl = `${newFilePath}?plan=${plan.toLowerCase()}`;
+
+    <script type="module">
+        // --- THREE.JS SETUP AND ANIMATION ---
+
+        let scene, camera, renderer;
+        let outerMesh, innerMesh; // Two wireframes for better depth
+        let particleSystem;
+        let mouseX = 0, mouseY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+        const canvas = document.getElementById('webgl-canvas');
+        const loaderContainer = document.getElementById('loader-container');
+
+        // Function to initialize the 3D scene
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x0f172a, 10, 100); // Deep blue fog
+
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 25;
+
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0); // Transparent renderer so the CSS body background shows
+
+            // 1. Outer Core Geometry (High Detail)
+            const outerGeometry = new THREE.IcosahedronGeometry(10, 3); 
+            const outerMaterial = new THREE.LineBasicMaterial({
+                color: 0x47d1cc, // Teal
+                linewidth: 1,
+                transparent: true,
+                opacity: 0.2
+            });
+            outerMesh = new THREE.LineSegments(
+                new THREE.WireframeGeometry(outerGeometry),
+                outerMaterial
+            );
+            scene.add(outerMesh);
+
+            // 2. Inner Core Geometry (Smaller, Faster, Different Color)
+            const innerGeometry = new THREE.IcosahedronGeometry(5, 2);
+            const innerMaterial = new THREE.LineBasicMaterial({
+                color: 0x00FFFF, // Cyan/Aqua
+                linewidth: 1,
+                transparent: true,
+                opacity: 0.35
+            });
+            innerMesh = new THREE.LineSegments(
+                new THREE.WireframeGeometry(innerGeometry),
+                innerMaterial
+            );
+            scene.add(innerMesh);
+
+            // 3. Particle Field (Data/Energy)
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 8000;
+            const posArray = new Float32Array(particlesCount * 3);
             
-            // This is the correct line to perform the actual navigation in a browser.
-            // window.location.href = checkoutUrl; 
-
-            // NOTE: In the live editor, we still use console.log to confirm the action, 
-            // but the window.location.href is the proper command for a production app.
-            console.log(`REDIRECTING to: ${checkoutUrl}`);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const currencySelector = document.getElementById('currency-selector');
-            
-            // Currency conversion data - UPDATED with JPY, GBP, CAD, AUD, CHF
-            // Prices are approximated and rounded for display purposes.
-            const prices = {
-                USD: { symbol: '$', advanced: 19, pro: 190 },
-                EUR: { symbol: '€', advanced: 18, pro: 175 }, 
-                INR: { symbol: '₹', advanced: 1599, pro: 15999 },
-                JPY: { symbol: '¥', advanced: 3000, pro: 30000 },
-                GBP: { symbol: '£', advanced: 15, pro: 150 },
-                CAD: { symbol: 'C$', advanced: 25, pro: 250 },
-                AUD: { symbol: 'A$', advanced: 30, pro: 300 },
-                CHF: { symbol: 'Fr', advanced: 18, pro: 180 }
-            };
-
-            const priceAdvancedEl = document.getElementById('price-advanced');
-            const priceProEl = document.getElementById('price-pro');
-
-            /**
-             * Updates the pricing displayed on the page based on the selected currency.
-             * @param {string} currencyCode - The selected currency code (USD, EUR, INR, etc.).
-             */
-            function updatePricing(currencyCode) {
-                const selectedPrices = prices[currencyCode];
-                if (selectedPrices) {
-                    // Use toLocaleString() for large numbers like INR and JPY
-                    priceAdvancedEl.textContent = `${selectedPrices.symbol}${selectedPrices.advanced.toLocaleString()}`;
-                    priceProEl.textContent = `${selectedPrices.symbol}${selectedPrices.pro.toLocaleString()}`;
-                }
+            for (let i = 0; i < particlesCount; i++) {
+                // Spread particles wider in the scene
+                posArray[i * 3] = (Math.random() - 0.5) * 150;
+                posArray[i * 3 + 1] = (Math.random() - 0.5) * 150;
+                posArray[i * 3 + 2] = (Math.random() - 0.5) * 150;
             }
 
-            // Set default currency to USD on load
-            updatePricing(currencySelector.value);
-
-            // Add event listener for currency change
-            currencySelector.addEventListener('change', (event) => {
-                updatePricing(event.target.value);
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x00FFFF, // Use Cyan for particles
+                size: 0.08,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 0.5
             });
-        });
+            particleSystem = new THREE.Points(particlesGeometry, particleMaterial);
+            scene.add(particleSystem);
+
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize, false);
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            document.addEventListener('touchmove', onDocumentTouchMove, false);
+        }
+
+        // Handle window resizing
+        function onWindowResize() {
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Handle mouse movement for subtle camera rotation
+        function onDocumentMouseMove(event) {
+            mouseX = (event.clientX - windowHalfX) / 100;
+            mouseY = (event.clientY - windowHalfY) / 100;
+        }
+
+        // Handle touch movement for subtle camera rotation (mobile)
+        function onDocumentTouchMove(event) {
+            if (event.touches.length === 1) {
+                event.preventDefault();
+                mouseX = (event.touches[0].pageX - windowHalfX) / 100;
+                mouseY = (event.touches[0].pageY - windowHalfY) / 100;
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = Date.now() * 0.0001;
+            const particleTime = Date.now() * 0.0005;
+
+            // Outer mesh: slower rotation
+            outerMesh.rotation.x += 0.0005;
+            outerMesh.rotation.y += 0.001;
+
+            // Inner mesh: faster, opposite rotation
+            innerMesh.rotation.x -= 0.001;
+            innerMesh.rotation.y += 0.0015;
+            innerMesh.rotation.z -= 0.0008;
+
+            // Camera movement based on mouse/touch
+            camera.position.x += (mouseX - camera.position.x) * 0.01;
+            camera.position.y += (-mouseY - camera.position.y) * 0.01;
+            camera.lookAt(scene.position);
+
+            // Particle opacity flicker/pulse (data flow effect)
+            particleSystem.material.opacity = 0.5 + Math.sin(particleTime) * 0.2;
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize and start the animation after Three.js is loaded
+        window.onload = function () {
+            init();
+            animate();
+            
+            // Fade out loader and show canvas after initialization
+            setTimeout(() => {
+                loaderContainer.style.opacity = '0';
+                canvas.style.opacity = '1';
+                setTimeout(() => {
+                    loaderContainer.style.display = 'none';
+                }, 1000); // Wait for the fade transition to finish
+            }, 500); // Small delay to ensure everything is ready
+        };
+
     </script>
 </body>
 </html>
-
